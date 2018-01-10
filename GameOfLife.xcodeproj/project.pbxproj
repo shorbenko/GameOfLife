@@ -13,6 +13,8 @@
 		196CAB86200693D300B6375D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 196CAB85200693D300B6375D /* Assets.xcassets */; };
 		196CAB89200693D300B6375D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 196CAB87200693D300B6375D /* LaunchScreen.storyboard */; };
 		196CAB8C200693D300B6375D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 196CAB8B200693D300B6375D /* main.m */; };
+		196CAB982006950700B6375D /* SHGameBoard.m in Sources */ = {isa = PBXBuildFile; fileRef = 196CAB972006950700B6375D /* SHGameBoard.m */; };
+		196CAB9B200697D300B6375D /* SHGame.m in Sources */ = {isa = PBXBuildFile; fileRef = 196CAB9A200697D300B6375D /* SHGame.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,10 @@
 		196CAB88200693D300B6375D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		196CAB8A200693D300B6375D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		196CAB8B200693D300B6375D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		196CAB962006950700B6375D /* SHGameBoard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SHGameBoard.h; sourceTree = "<group>"; };
+		196CAB972006950700B6375D /* SHGameBoard.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SHGameBoard.m; sourceTree = "<group>"; };
+		196CAB99200697D300B6375D /* SHGame.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SHGame.h; sourceTree = "<group>"; };
+		196CAB9A200697D300B6375D /* SHGame.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SHGame.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +68,7 @@
 				196CAB7D200693D300B6375D /* AppDelegate.m */,
 				196CAB7F200693D300B6375D /* ViewController.h */,
 				196CAB80200693D300B6375D /* ViewController.m */,
+				196CAB922006945400B6375D /* Game */,
 				196CAB82200693D300B6375D /* Main.storyboard */,
 				196CAB85200693D300B6375D /* Assets.xcassets */,
 				196CAB87200693D300B6375D /* LaunchScreen.storyboard */,
@@ -69,6 +76,17 @@
 				196CAB8B200693D300B6375D /* main.m */,
 			);
 			path = GameOfLife;
+			sourceTree = "<group>";
+		};
+		196CAB922006945400B6375D /* Game */ = {
+			isa = PBXGroup;
+			children = (
+				196CAB962006950700B6375D /* SHGameBoard.h */,
+				196CAB972006950700B6375D /* SHGameBoard.m */,
+				196CAB99200697D300B6375D /* SHGame.h */,
+				196CAB9A200697D300B6375D /* SHGame.m */,
+			);
+			path = Game;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -144,6 +162,8 @@
 			files = (
 				196CAB81200693D300B6375D /* ViewController.m in Sources */,
 				196CAB8C200693D300B6375D /* main.m in Sources */,
+				196CAB982006950700B6375D /* SHGameBoard.m in Sources */,
+				196CAB9B200697D300B6375D /* SHGame.m in Sources */,
 				196CAB7E200693D300B6375D /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -64,20 +64,7 @@
 
 -(NSUInteger)neighborCountForX:(int)x andY:(int)y
 {
-    __block NSUInteger neighborCount = 0;
-    [self enumerateNeighborsForX:x
-                            andY:y
-                      usingBlock:^(int neighborX, int neighborY) {
-                          if ([self stateAtX:neighborX andY:neighborY inArray:self.cells]==SHCellStateAlive)
-                              neighborCount++;
-                      }];
-    return neighborCount;
-}
-
--(void)enumerateNeighborsForX:(int)x
-                         andY:(int)y
-                   usingBlock:(void (^)(int neighborX, int neighborY))block
-{
+    NSUInteger neighborCount = 0;
     for (int i = x-1; i <= x+1; i++) {
         for (int j = y-1; j <= y+1; j++) {
             // skip the dot itself
@@ -99,9 +86,11 @@
             else if (j == self.size.height) {
                 finalY = 0;
             }
-            block(finalX, finalY);
+            if ([self stateAtX:finalX andY:finalY inArray:self.cells]==SHCellStateAlive)
+                neighborCount++;
         }
     }
+    return neighborCount;
 }
 
 #pragma mark - Pattern insertion

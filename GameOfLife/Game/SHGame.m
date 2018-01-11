@@ -49,6 +49,8 @@
 
 -(void)runGame
 {
+    NSDate *methodStart = [NSDate date];
+    
     [self.gameBoard addPattern:[SHGliderPattern new]];
     NSString *delimiter = @"\n\n\n";
     NSString *log =[self.gameBoard stringRepresentation];
@@ -63,6 +65,9 @@
         }
     }
     [self endGame];
+    NSDate *methodFinish = [NSDate date];
+    NSTimeInterval executionTime = [methodFinish timeIntervalSinceDate:methodStart];
+    NSLog(@"Execution time = %f seconds, Sppend = %f count/s", executionTime,self.lifeCycleStepsCount/executionTime);
 }
 
 -(void)endGame

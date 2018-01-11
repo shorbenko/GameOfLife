@@ -10,7 +10,7 @@
 
 @interface SHGameBoard ()
 
-@property (nonatomic,assign) int *cells; // current state, pointer to c array of width*height size
+@property (nonatomic,assign) bool *cells; // current state, pointer to c array of width*height size
 
 @end
 
@@ -35,8 +35,8 @@
 
 -(void)runNextStep
 {
-    int *nextCells = [self createCells];
-    int *cells = self.cells;
+    bool *nextCells = [self createCells];
+    bool *cells = self.cells;
     
     for (int x = 0; x < self.size.width; x++) {
         for (int y = 0; y < self.size.height; y++) {
@@ -100,7 +100,7 @@
     for (int x = 0; x<pattern.cells.count; x++) {
         NSArray *col = pattern.cells[x];
         for (int y =0; y < col.count; y++) {
-            SHCellState state = [col[y] intValue];
+            SHCellState state = [col[y] boolValue];
             [self setState:state atX:x andY:y inArray:self.cells];
         }
     }
@@ -111,7 +111,7 @@
 -(void)setState:(SHCellState) state
             atX:(int)x
            andY:(int)y
-        inArray:(int *)array
+        inArray:(bool *)array
 {
     int n = self.size.height;
     array[x * n + y] = state;
@@ -119,7 +119,7 @@
 
 -(SHCellState)stateAtX:(int)x
                   andY:(int)y
-               inArray:(int *)array
+               inArray:(bool *)array
 {
     int n = self.size.height;
     return array[x * n + y];
@@ -129,7 +129,7 @@
 
 -(void)clear
 {
-    int *array = self.cells;
+    bool *array = self.cells;
     int n = self.size.height;
     for (int x = 0; x < self.size.width; x++) {
         for (int y = 0; y < self.size.height; y++) {
@@ -138,11 +138,11 @@
     }
 }
 
--(int *)createCells
+-(bool *)createCells
 {
     NSUInteger rows = self.size.width;
     NSUInteger columns = self.size.height;
-    int *array = calloc(rows * columns, sizeof(int));
+    bool *array = calloc(rows * columns, sizeof(bool));
     return array;
 }
 

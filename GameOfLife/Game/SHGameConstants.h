@@ -11,7 +11,7 @@ struct SHSize {
     int height;
 };
 
-typedef NS_ENUM(int, SHCellState) {
+typedef NS_ENUM(bool, SHCellState) {
     SHCellStateDead = 0,
     SHCellStateAlive = 1
 };

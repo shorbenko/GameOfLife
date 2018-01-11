@@ -7,11 +7,11 @@
 //
 
 struct SHSize {
-    NSUInteger width;
-    NSUInteger height;
+    int width;
+    int height;
 };
 
-typedef NS_ENUM(NSUInteger, SHCellState) {
-    SHCellStateDead=0,
-    SHCellStateAlive=1
+typedef NS_ENUM(int, SHCellState) {
+    SHCellStateDead = 0,
+    SHCellStateAlive = 1
 };

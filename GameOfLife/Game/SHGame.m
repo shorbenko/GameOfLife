@@ -54,11 +54,13 @@
     NSString *log =[self.gameBoard stringRepresentation];
     [self appendStringToFile:[log stringByAppendingString:delimiter]];
     
-    for (NSUInteger i =0; i< self.lifeCycleStepsCount; i++) {
-        NSLog(@"Calculating step %lu of %lu",i, self.lifeCycleStepsCount);
-        [self.gameBoard nextStep];
-        log = [[self.gameBoard stringRepresentation] stringByAppendingString:delimiter];
-        [self appendStringToFile:log];
+    for (NSUInteger i = 0; i < self.lifeCycleStepsCount; i++) {
+        @autoreleasepool {
+            NSLog(@"Calculating step %lu of %lu",i, self.lifeCycleStepsCount);
+            [self.gameBoard nextStep];
+            log = [[self.gameBoard stringRepresentation] stringByAppendingString:delimiter];
+            [self appendStringToFile:log];
+        }
     }
     [self endGame];
 }

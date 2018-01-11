@@ -19,16 +19,10 @@
 {
     self = [super init];
     if (self) {
-        struct SHSize size;
-        size.width = 3;
-        size.height = 3;
-        self.size = size;
-        self.cells = @{[SHGameBoardCellKeyBuilder keyForX:2 andY:0]: @(SHCellStateAlive),
-                       [SHGameBoardCellKeyBuilder keyForX:0 andY:1]: @(SHCellStateAlive),
-                       [SHGameBoardCellKeyBuilder keyForX:2 andY:1]: @(SHCellStateAlive),
-                       [SHGameBoardCellKeyBuilder keyForX:1 andY:2]: @(SHCellStateAlive),
-                       [SHGameBoardCellKeyBuilder keyForX:2 andY:2]: @(SHCellStateAlive)
-                       };
+        self.cells = @[@[@(SHCellStateDead),@(SHCellStateAlive),@(SHCellStateDead)],
+                       @[@(SHCellStateDead),@(SHCellStateDead),@(SHCellStateAlive)],
+                       @[@(SHCellStateAlive),@(SHCellStateAlive),@(SHCellStateAlive)],
+                       ];
     }
     return self;
 }

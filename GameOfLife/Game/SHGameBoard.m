@@ -11,8 +11,7 @@
 
 @interface SHGameBoard ()
 
-@property (nonatomic,strong) NSMutableDictionary <NSString *, NSNumber *> *cells; // current state
-@property (nonatomic,strong) NSArray <NSArray <NSString *> *> *cellKeys; // optimization
+@property (nonatomic,assign) int *cells; // current state, pointer to c array of width*height size
 
 @end
 
@@ -23,127 +22,152 @@
     self = [super init];
     if (self) {
         self.size = size;
-        [self createCells];
-        [self createCellKeys];
+        self.cells = [self createCells];
     }
     return self;
 }
 
--(void)createCellKeys
-{
-    NSMutableArray *cellKeys = [NSMutableArray arrayWithCapacity:self.size.width];
-    for (NSUInteger x =0; x<self.size.width; x++) {
-        NSMutableArray *columnKeys = [NSMutableArray arrayWithCapacity:self.size.height];
-        for (NSUInteger y =0; y<self.size.height; y++) {
-            NSString *key = [SHGameBoardCellKeyBuilder keyForX:x andY:y];
-            [columnKeys addObject:key];
-        }
-        [cellKeys addObject:columnKeys];
-    }
-    self.cellKeys = cellKeys;
-}
-
--(void)addPattern:(SHPattern *)pattern
-{
-    for (NSUInteger x =0; x<pattern.size.width; x++) {
-        for (NSUInteger y =0; y<pattern.size.height; y++) {
-            NSString *key = [self keyForX:x andY:y];
-            SHCellState state = [pattern.cells[key] integerValue];
-            [self setState:state forKey:key inCells:self.cells];
-        }
-    }
-}
-
--(void)clear
-{
-    [self createCells];
-}
-
--(void)createCells
-{
-    self.cells = [NSMutableDictionary dictionary];
-}
+#pragma mark - Run
 
 -(void)nextStep
 {
-    @autoreleasepool {
-        [self runNextStep];
-    }
+    [self runNextStep];
 }
 
 -(void)runNextStep
 {
-    NSMutableDictionary *nextCells = [NSMutableDictionary dictionary];
-    for (NSUInteger x =0; x<self.size.width; x++) {
-        for (NSUInteger y =0; y<self.size.height; y++) {
-            NSString *key = [self keyForX:x andY:y];
+    int *nextCells = [self createCells];
+    int *cells = self.cells;
+    
+    for (int x = 0; x < self.size.width; x++) {
+        for (int y = 0; y < self.size.height; y++) {
             SHCellState state = [self futureStateForX:x andY:y];
-            [self setState:state forKey:key inCells:nextCells];
+            [self setState:state atX:x andY:y inArray:nextCells];
         }
     }
+    free(cells);
+    cells = NULL;
     self.cells = nextCells;
 }
 
--(void)setState:(SHCellState) state forKey:(NSString *)key inCells:(NSMutableDictionary *) cells
+-(SHCellState)futureStateForX:(int) x andY:(int)y
 {
-    NSNumber *storedValue = nil;
-    // do not waste memory to store dead states as nil will be transformed to 0 same as SHCellStateDead
-    if (state!=SHCellStateDead) {
-        storedValue = @(state);
-    }
-    cells[key] = storedValue;
-}
-
--(SHCellState)futureStateForX:(NSUInteger) x andY:(NSUInteger)y
-{
-    NSString *key = [self keyForX:x andY:y];
     NSUInteger neighborCount =  [self neighborCountForX:x andY:y];
-    if (([self.cells[key] integerValue] == SHCellStateAlive && neighborCount==2) ||
+    SHCellState state = [self stateAtX:x andY:y inArray:self.cells];
+    if ((state == SHCellStateAlive && neighborCount ==2 ) ||
         neighborCount == 3) {
         return SHCellStateAlive;
     }
     return SHCellStateDead;
 }
 
--(NSUInteger)neighborCountForX:(NSInteger)x andY:(NSInteger)y
+#pragma mark - Neighbors
+
+-(NSUInteger)neighborCountForX:(int)x andY:(int)y
 {
-    NSUInteger neighborCount = 0;
-    for (NSInteger i=x-1; i<=x+1; i++) {
-        for (NSInteger j=y-1; j<=y+1; j++) {
+    __block NSUInteger neighborCount = 0;
+    [self enumerateNeighborsForX:x
+                            andY:y
+                      usingBlock:^(int neighborX, int neighborY) {
+                          if ([self stateAtX:neighborX andY:neighborY inArray:self.cells]==SHCellStateAlive)
+                              neighborCount++;
+                      }];
+    return neighborCount;
+}
+
+-(void)enumerateNeighborsForX:(int)x
+                         andY:(int)y
+                   usingBlock:(void (^)(int neighborX, int neighborY))block
+{
+    for (int i = x-1; i <= x+1; i++) {
+        for (int j = y-1; j <= y+1; j++) {
+            // skip the dot itself
+            if (x==i && j==y)
+                continue;
             // skip the dot itself
             if (x==i && j==y)
                 continue;
             // out of bounds checks
-            NSInteger finalX = i;
-            if (i<0)
+            int finalX = i;
+            if (i < 0)
                 finalX = self.size.width - 1;
-            else if (i==self.size.width) {
+            else if (i == self.size.width) {
                 finalX = 0;
             }
-            NSInteger finalY = j;
-            if (j<0)
+            int finalY = j;
+            if (j < 0)
                 finalY = self.size.height - 1;
-            else if (j==self.size.height) {
+            else if (j == self.size.height) {
                 finalY = 0;
             }
-            NSString *key = [self keyForX:finalX andY:finalY];
-            if ([self.cells[key] integerValue]==SHCellStateAlive)
-                neighborCount++;
+            block(finalX, finalY);
         }
     }
-    return neighborCount;
+}
+
+#pragma mark - Pattern insertion
+
+-(void)addPattern:(SHPattern *)pattern
+{
+    for (int x = 0; x<pattern.cells.count; x++) {
+        NSArray *col = pattern.cells[x];
+        for (int y =0; y < col.count; y++) {
+            SHCellState state = [col[y] intValue];
+            [self setState:state atX:x andY:y inArray:self.cells];
+        }
+    }
+}
+
+#pragma mark - Get & Set operations
+
+-(void)setState:(SHCellState) state
+            atX:(int)x
+           andY:(int)y
+        inArray:(int *)array
+{
+    int n = self.size.height;
+    array[x * n + y] = state;
+}
+
+-(SHCellState)stateAtX:(int)x
+                  andY:(int)y
+               inArray:(int *)array
+{
+    int n = self.size.height;
+    return array[x * n + y];
+}
+
+#pragma mark - Clear and init cells
+
+-(void)clear
+{
+    int *array = self.cells;
+    int n = self.size.height;
+    for (int x = 0; x < self.size.width; x++) {
+        for (int y = 0; y < self.size.height; y++) {
+            array[x * n + y] = SHCellStateDead;
+        }
+    }
+}
+
+-(int *)createCells
+{
+    NSUInteger rows = self.size.width;
+    NSUInteger columns = self.size.height;
+    int *array = calloc(rows * columns, sizeof(int));
+    return array;
 }
 
 #pragma mark - Printing
 
 -(NSString *)stringRepresentation
 {
-    NSMutableString *string = [[NSMutableString alloc] initWithCapacity:self.size.width*self.size.height];
-    
-    for (NSUInteger y=0; y<self.size.height; y++) {
-        for (NSUInteger x =0; x<self.size.width; x++) {
-            NSString *key = [self keyForX:x andY:y];
-            SHCellState state = [self.cells[key] integerValue];
+    NSUInteger width = self.size.width;
+    NSUInteger height = self.size.height;
+    NSMutableString *string = [[NSMutableString alloc] initWithCapacity:width*height];
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x <width; x++) {
+            SHCellState state = [self stateAtX:x andY:y inArray:self.cells];
             NSString *symbol = nil;
             switch (state) {
                 case SHCellStateDead:
@@ -162,10 +186,4 @@
     return string;
 }
 
-#pragma mark - Helpers
-
--(NSString *)keyForX:(NSUInteger) x andY:(NSUInteger) y
-{
-    return self.cellKeys[x][y];
-}
 @end

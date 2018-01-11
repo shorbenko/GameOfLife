@@ -11,7 +11,6 @@
 
 @interface SHPattern : NSObject
 
-@property (nonatomic,assign) struct SHSize size;
-@property (nonatomic,strong) NSDictionary <NSString *, NSNumber *> *cells;
+@property (nonatomic,strong) NSArray <NSArray <NSNumber *> *> *cells;
 
 @end

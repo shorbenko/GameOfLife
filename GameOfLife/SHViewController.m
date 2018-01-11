@@ -11,7 +11,7 @@
 
 @interface SHViewController ()
 
-@property (nonatomic,strong)SHGame *game;
+@property (nonatomic,strong) SHGame *game;
 
 @end
 

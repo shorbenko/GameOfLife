@@ -7,25 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
-
-struct SHBoardSize {
-    NSUInteger width;
-    NSUInteger height;
-};
-
-typedef NS_ENUM(NSUInteger, SHCellState) {
-    SHCellStateDead,
-    SHCellStateAlive
-};
-
+#import "SHGameConstants.h"
+#import "SHPattern.h"
 
 @interface SHGameBoard : NSObject
 
-@property (nonatomic,assign) struct SHBoardSize size;
+@property (nonatomic,assign) struct SHSize size;
 
-- (instancetype)initWithSize:(struct SHBoardSize) size;
+- (instancetype)initWithSize:(struct SHSize) size;
 
--(void)clear;
+-(void)addPattern:(SHPattern *)pattern;// adds to the top right corner
 -(void)nextStep;
+-(NSString *)stringRepresentation;
+-(void)clear;
 
 @end

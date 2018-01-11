@@ -7,47 +7,91 @@
 //
 
 #import "SHGameBoard.h"
+#import "SHGameBoardCellKeyBuilder.h"
 
 @interface SHGameBoard ()
 
-@property (nonatomic,strong) NSMutableDictionary <NSString *, NSNumber *> *cells;
+@property (nonatomic,strong) NSMutableDictionary <NSString *, NSNumber *> *cells; // current state
+@property (nonatomic,strong) NSArray <NSArray <NSString *> *> *cellKeys; // optimization
 
 @end
 
 @implementation SHGameBoard
 
-- (instancetype)initWithSize:(struct SHBoardSize) size
+- (instancetype)initWithSize:(struct SHSize) size
 {
     self = [super init];
     if (self) {
         self.size = size;
         [self createCells];
+        [self createCellKeys];
     }
     return self;
 }
 
--(void)createCells
+-(void)createCellKeys
 {
-    NSMutableDictionary *cells = [NSMutableDictionary dictionary];
+    NSMutableArray *cellKeys = [NSMutableArray arrayWithCapacity:self.size.width];
     for (NSUInteger x =0; x<self.size.width; x++) {
+        NSMutableArray *columnKeys = [NSMutableArray arrayWithCapacity:self.size.height];
         for (NSUInteger y =0; y<self.size.height; y++) {
+            NSString *key = [SHGameBoardCellKeyBuilder keyForX:x andY:y];
+            [columnKeys addObject:key];
+        }
+        [cellKeys addObject:columnKeys];
+    }
+    self.cellKeys = cellKeys;
+}
+
+-(void)addPattern:(SHPattern *)pattern
+{
+    for (NSUInteger x =0; x<pattern.size.width; x++) {
+        for (NSUInteger y =0; y<pattern.size.height; y++) {
             NSString *key = [self keyForX:x andY:y];
-            cells[key] = @(SHCellStateDead);
+            SHCellState state = [pattern.cells[key] integerValue];
+            [self setState:state forKey:key inCells:self.cells];
         }
     }
-    self.cells = cells;
+}
+
+-(void)clear
+{
+    [self createCells];
+}
+
+-(void)createCells
+{
+    self.cells = [NSMutableDictionary dictionary];
 }
 
 -(void)nextStep
+{
+    @autoreleasepool {
+        [self runNextStep];
+    }
+}
+
+-(void)runNextStep
 {
     NSMutableDictionary *nextCells = [NSMutableDictionary dictionary];
     for (NSUInteger x =0; x<self.size.width; x++) {
         for (NSUInteger y =0; y<self.size.height; y++) {
             NSString *key = [self keyForX:x andY:y];
-            nextCells[key] = @([self futureStateForX:x andY:y]);
+            SHCellState state = [self futureStateForX:x andY:y];
+            [self setState:state forKey:key inCells:nextCells];
         }
     }
     self.cells = nextCells;
+}
+
+-(void)setState:(SHCellState) state forKey:(NSString *)key inCells:(NSMutableDictionary *) cells
+{
+    NSNumber *storedValue = nil;
+    // do not waste memory to store dead states as nil will be transformed to 0 same as SHCellStateDead
+    if (state!=SHCellStateDead) {
+        storedValue = @(state);
+    }
+    cells[key] = storedValue;
 }
 
 -(SHCellState)futureStateForX:(NSUInteger) x andY:(NSUInteger)y
@@ -61,15 +105,28 @@
     return SHCellStateDead;
 }
 
--(NSUInteger)neighborCountForX:(NSUInteger)x andY:(NSUInteger)y
+-(NSUInteger)neighborCountForX:(NSInteger)x andY:(NSInteger)y
 {
     NSUInteger neighborCount = 0;
-    NSString *centerCellKey = [self keyForX:1 andY:1];
-    for (NSUInteger x =0; x<3; x++) {
-        for (NSUInteger y =0; y<3; y++) {
-            NSString *key = [self keyForX:x andY:y];
-            if ([key isEqualToString:centerCellKey])
+    for (NSInteger i=x-1; i<=x+1; i++) {
+        for (NSInteger j=y-1; j<=y+1; j++) {
+            // skip the dot itself
+            if (x==i && j==y)
                 continue;
+            // out of bounds checks
+            NSInteger finalX = i;
+            if (i<0)
+                finalX = self.size.width - 1;
+            else if (i==self.size.width) {
+                finalX = 0;
+            }
+            NSInteger finalY = j;
+            if (j<0)
+                finalY = self.size.height - 1;
+            else if (j==self.size.height) {
+                finalY = 0;
+            }
+            NSString *key = [self keyForX:finalX andY:finalY];
             if ([self.cells[key] integerValue]==SHCellStateAlive)
                 neighborCount++;
         }
@@ -77,21 +134,38 @@
     return neighborCount;
 }
 
+#pragma mark - Printing
 
--(void)print
+-(NSString *)stringRepresentation
 {
+    NSMutableString *string = [[NSMutableString alloc] initWithCapacity:self.size.width*self.size.height];
     
-}
-
--(void)clear
-{
-    [self createCells];
+    for (NSUInteger y=0; y<self.size.height; y++) {
+        for (NSUInteger x =0; x<self.size.width; x++) {
+            NSString *key = [self keyForX:x andY:y];
+            SHCellState state = [self.cells[key] integerValue];
+            NSString *symbol = nil;
+            switch (state) {
+                case SHCellStateDead:
+                    symbol = @"0";
+                    break;
+                case SHCellStateAlive:
+                    symbol = @"1";
+                    break;
+                default:
+                    break;
+            }
+            [string appendString:symbol];
+        }
+        [string appendString:@"\n"];
+    }
+    return string;
 }
 
 #pragma mark - Helpers
 
 -(NSString *)keyForX:(NSUInteger) x andY:(NSUInteger) y
 {
-    return [NSString stringWithFormat:@"%lu_%lu",x,y];
+    return self.cellKeys[x][y];
 }
 @end

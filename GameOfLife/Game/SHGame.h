@@ -10,8 +10,9 @@
 
 @interface SHGame : NSObject
 
-@property (nonatomic,assign) NSUInteger lifeCicleStepsCount;
+@property (nonatomic,assign) NSUInteger lifeCycleStepsCount;
 
+-(void)runGame;
 -(void)nuclearBomb;
 
 @end

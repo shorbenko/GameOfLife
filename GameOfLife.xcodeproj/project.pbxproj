@@ -16,7 +16,6 @@
 		196CAB982006950700B6375D /* SHGameBoard.m in Sources */ = {isa = PBXBuildFile; fileRef = 196CAB972006950700B6375D /* SHGameBoard.m */; };
 		196CAB9B200697D300B6375D /* SHGame.m in Sources */ = {isa = PBXBuildFile; fileRef = 196CAB9A200697D300B6375D /* SHGame.m */; };
 		19C5C1E62007564100237204 /* SHGliderPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C5C1E52007564100237204 /* SHGliderPattern.m */; };
-		19C5C1EA2007580700237204 /* SHGameBoardCellKeyBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C5C1E92007580700237204 /* SHGameBoardCellKeyBuilder.m */; };
 		19C5C1F42007596A00237204 /* SHPattern.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C5C1F32007596A00237204 /* SHPattern.m */; };
 /* End PBXBuildFile section */
 
@@ -38,8 +37,6 @@
 		19C5C1E42007564100237204 /* SHGliderPattern.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SHGliderPattern.h; sourceTree = "<group>"; };
 		19C5C1E52007564100237204 /* SHGliderPattern.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SHGliderPattern.m; sourceTree = "<group>"; };
 		19C5C1E72007571E00237204 /* SHGameConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SHGameConstants.h; sourceTree = "<group>"; };
-		19C5C1E82007580700237204 /* SHGameBoardCellKeyBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SHGameBoardCellKeyBuilder.h; sourceTree = "<group>"; };
-		19C5C1E92007580700237204 /* SHGameBoardCellKeyBuilder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SHGameBoardCellKeyBuilder.m; sourceTree = "<group>"; };
 		19C5C1F22007596A00237204 /* SHPattern.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SHPattern.h; sourceTree = "<group>"; };
 		19C5C1F32007596A00237204 /* SHPattern.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SHPattern.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -96,8 +93,6 @@
 				196CAB9A200697D300B6375D /* SHGame.m */,
 				196CAB962006950700B6375D /* SHGameBoard.h */,
 				196CAB972006950700B6375D /* SHGameBoard.m */,
-				19C5C1E82007580700237204 /* SHGameBoardCellKeyBuilder.h */,
-				19C5C1E92007580700237204 /* SHGameBoardCellKeyBuilder.m */,
 				19C5C1EB200758ED00237204 /* Patterns */,
 			);
 			path = Game;
@@ -187,7 +182,6 @@
 			files = (
 				19C5C1E62007564100237204 /* SHGliderPattern.m in Sources */,
 				196CAB81200693D300B6375D /* SHViewController.m in Sources */,
-				19C5C1EA2007580700237204 /* SHGameBoardCellKeyBuilder.m in Sources */,
 				196CAB8C200693D300B6375D /* main.m in Sources */,
 				196CAB982006950700B6375D /* SHGameBoard.m in Sources */,
 				196CAB9B200697D300B6375D /* SHGame.m in Sources */,

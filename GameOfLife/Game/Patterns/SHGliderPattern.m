@@ -7,7 +7,6 @@
 //
 
 #import "SHGliderPattern.h"
-#import "SHGameBoardCellKeyBuilder.h"
 
 @interface SHGliderPattern ()
 

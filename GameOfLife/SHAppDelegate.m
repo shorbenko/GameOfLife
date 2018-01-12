@@ -6,13 +6,13 @@
 //  Copyright © 2018 Serhii Horbenko. All rights reserved.
 //
 
-#import "AppDelegate.h"
+#import "SHAppDelegate.h"
 
-@interface AppDelegate ()
+@interface SHAppDelegate ()
 
 @end
 
-@implementation AppDelegate
+@implementation SHAppDelegate
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
